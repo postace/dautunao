@@ -2,9 +2,13 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 require('dotenv').load();
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 mongoose.connect(process.env.MONGO_URI);
 mongoose.Promise = global.Promise;
