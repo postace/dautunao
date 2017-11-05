@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const router = require('./app/routes/index');
+const { extractUserInfo } = require('./app/middleware/authMiddleware');
 
 require('dotenv').load();
 const app = express();
@@ -12,6 +13,7 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(extractUserInfo);
 
 mongoose.connect(process.env.MONGO_URI);
 mongoose.Promise = global.Promise;
