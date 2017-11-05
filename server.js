@@ -16,6 +16,16 @@ mongoose.Promise = global.Promise;
 
 app.use('/', router);
 
+app.use((req, res) => {
+  res.status(404);
+  res.json({ status: 'Not Found' });
+});
+
+app.use((error, req, res, next) => {
+  res.status(500);
+  res.json({ status: 'Internal Server Error' });
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`DauTuNao is running on port ${port}`);
