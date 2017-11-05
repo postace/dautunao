@@ -7,7 +7,7 @@ const utils = require("../utils/util");
 /**
  * First time register a user
  */
-router.post("/api/user/register", (req, res) => {
+router.post("/api/users/register", (req, res) => {
   if (!req.userInfo) {
     res.status(401).json({
       message: "Missing access token!"
@@ -16,6 +16,22 @@ router.post("/api/user/register", (req, res) => {
 
   userService
     .registerNewUser(req.userInfo)
+    .then(() => res.status(201).end())
+    .catch(err => {
+      console.log(err);
+
+      res.status(500).json({
+        message: "Internal Server Error. Please try again"
+      });
+    });
+});
+
+/**
+ * Save user info (name, mail, phone)
+ */
+router.post("/api/free_user", (req, res) => {
+  userService
+    .saveFreeUser(req.body)
     .then(() => res.status(201).end())
     .catch(err => {
       console.log(err);

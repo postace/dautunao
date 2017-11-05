@@ -9,7 +9,17 @@ let User = new Schema({
   customerName: String,
   email: String,
   username: String,
+  tradingExp: Number,
+  status: String,
   registerStatus: String
 });
 
-module.exports = mongoose.model("User", User);
+let FreeUser = new Schema({
+  fullName: String,
+  email: String,
+  phoneNumber: String
+});
+
+exports.User = mongoose.model("User", User);
+
+exports.FreeUser = mongoose.model("FreeUser", FreeUser);
