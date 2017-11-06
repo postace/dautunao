@@ -11,7 +11,8 @@ let User = new Schema({
   username: String,
   tradingExp: Number,
   status: String,
-  registerStatus: String
+  registerStatus: String,
+  subAccounts: [{ accountName: String, _id: false }]
 });
 
 let FreeUser = new Schema({

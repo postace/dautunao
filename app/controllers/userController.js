@@ -88,4 +88,28 @@ router.get("/api/users/info", (req, res) => {
     });
 });
 
+/**
+ * Add sub-account for a user
+ */
+router.post("/api/users/sub_account", (req, res) => {
+  if (!req.userInfo) {
+    res.status(401).json({
+      message: "Missing access token!"
+    });
+  }
+
+  // TODO: Check for missing accountName in request body
+  const customerId = req.userInfo.customerId;
+  userService
+    .createSubAccount(customerId, req.body.accountName)
+    .then(() => res.status(201).end())
+    .catch(err => {
+      console.log(err);
+
+      res.status(500).json({
+        message: "Something error! Please try again later"
+      });
+    });
+});
+
 module.exports = router;

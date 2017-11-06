@@ -83,3 +83,23 @@ exports.getUserInfo = customerId => {
   });
 };
 
+exports.createSubAccount = (customerId, accountName) => {
+  return new Promise((resolve, reject) => { 
+    // TODO: Check for user exist
+    // TODO: Validate accountName unique, not empty
+    User.findOne({ customerId: customerId }, (err, user) => {
+      if (err) {
+        reject(err);
+      }
+
+      user.subAccounts.push({ accountName: accountName });
+      user.save(err => {
+        if (err) {
+          reject(err);
+        }
+
+        resolve();
+      })
+    })
+  });
+}
