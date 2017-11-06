@@ -42,4 +42,28 @@ router.post("/api/free_user", (req, res) => {
     });
 });
 
+/**
+ * Sign up user for investment portfolio
+ */
+router.post("/api/users/investment", (req, res) => {
+  if (!req.userInfo) {
+    res.status(401).json({
+      message: "Missing access token!"
+    });
+  }
+  let investmentData = req.body;
+  let customerId = req.userInfo.customerId;
+
+  userService
+    .registerInvestment(customerId, investmentData)
+    .then(() => res.status(201).end())
+    .catch(err => {
+      console.log('Save investment error', err);
+
+      res.status(500).json({
+        message: "Internal Server Error. Please try again"
+      });
+    });
+});
+
 module.exports = router;

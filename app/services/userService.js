@@ -1,6 +1,7 @@
 "use strict";
 
 let { User, FreeUser } = require("../models/user");
+let InvestmentPortfolio = require("../models/investment");
 const { REGISTER_STATUS } = require("../utils/userUtil");
 
 exports.registerNewUser = userInfo => {
@@ -27,7 +28,7 @@ exports.registerNewUser = userInfo => {
 };
 
 exports.saveFreeUser = userReq => {
-  return new Promise((resolve, reject) => { 
+  return new Promise((resolve, reject) => {
     let user = new FreeUser({
       fullName: userReq.fullName,
       email: userReq.email,
@@ -40,6 +41,29 @@ exports.saveFreeUser = userReq => {
       }
 
       resolve();
-    })
+    });
   });
-}
+};
+
+exports.registerInvestment = (customerId, investmentData) => {
+  return new Promise((resolve, reject) => {
+    let investmentPortfolio = new InvestmentPortfolio({
+      customerId: customerId,
+      subAccount: investmentData.subAccount,
+      investmentPurpose: investmentData.investmentPurpose,
+      investTime: investmentData.investTime,
+      goal: investmentData.goal,
+      riskLevel: investmentData.riskLevel,
+      category: investmentData.category,
+      categoryName: investmentData.categoryName
+    });
+    
+    investmentPortfolio.save(err => {
+      if (err) {
+        reject(err);
+      }
+
+      resolve();
+    });
+  });
+};
