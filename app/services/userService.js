@@ -67,3 +67,19 @@ exports.registerInvestment = (customerId, investmentData) => {
     });
   });
 };
+
+exports.getUserInfo = customerId => {
+  return new Promise((resolve, reject) => { 
+    // find user by their's customerId
+    User.findOne({
+      customerId: customerId
+    }, (err, res) => {
+      if (err) {
+        reject(err);
+      }
+
+      resolve(res);
+    });
+  });
+};
+

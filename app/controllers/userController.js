@@ -58,10 +58,32 @@ router.post("/api/users/investment", (req, res) => {
     .registerInvestment(customerId, investmentData)
     .then(() => res.status(201).end())
     .catch(err => {
-      console.log('Save investment error', err);
+      console.log("Save investment error", err);
 
       res.status(500).json({
         message: "Internal Server Error. Please try again"
+      });
+    });
+});
+
+/**
+ * Get user information
+ */
+router.get("/api/users/info", (req, res) => {
+  if (!req.userInfo) {
+    res.status(401).json({
+      message: "Missing access token!"
+    });
+  }
+
+  userService
+    .getUserInfo(req.userInfo.customerId)
+    .then(data => res.json(data))
+    .catch(err => {
+      console.log("Get user error", err);
+
+      res.status(404).json({
+        message: "Cannot find this user"
       });
     });
 });
