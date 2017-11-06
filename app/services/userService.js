@@ -45,6 +45,18 @@ exports.saveFreeUser = userReq => {
   });
 };
 
+exports.getInvestmentPortfolio = (customerId, subAccount) => {
+  return new Promise((resolve, reject) => { 
+    InvestmentPortfolio.find({ subAccount: subAccount }, (err, doc) => {
+      if (err) {
+        reject(err);
+      }
+
+      resolve(doc);
+    })
+  });
+};
+
 exports.registerInvestment = (customerId, investmentData) => {
   return new Promise((resolve, reject) => {
     let investmentPortfolio = new InvestmentPortfolio({

@@ -43,6 +43,29 @@ router.post("/api/free_user", (req, res) => {
 });
 
 /**
+ * Get sub-account investment portfolio
+ * 
+ */
+router.get("/api/users/investment", (req, res) => {
+  if (!req.userInfo) {
+    res.status(401).json({
+      message: "Missing access token!"
+    });
+  }
+
+  let customerId = req.userInfo.customerId;
+  let subAccount = req.query.subAccount;
+  
+  userService.getInvestmentPortfolio(customerId, subAccount)
+    .then(doc => res.json(doc))
+    .catch(err => {
+      console.log(err);
+
+      res.status(500).json({ message: 'Investment portfolio not found' });
+    });
+});
+
+/**
  * Sign up user for investment portfolio
  */
 router.post("/api/users/investment", (req, res) => {
