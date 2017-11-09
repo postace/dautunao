@@ -23,7 +23,13 @@ let User = new Schema({
     type: Date,
     default: Date.now
   },
-  subAccounts: [{ accountName: String, _id: false }]
+  subAccounts: [{ accountName: String, _id: false }],
+  _id: String
+});
+
+User.pre('save', function (next) {
+  this._id = this.customerId;
+  next();
 });
 
 let FreeUser = new Schema({

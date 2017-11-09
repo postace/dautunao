@@ -5,21 +5,22 @@ const Schema = mongoose.Schema;
 
 let InvestmentPortfolio = new Schema({
   customerId: String,
-  subAccount: String,
+  subAccount: {
+    type: String,
+    required: true,
+    unique: true
+  },
   investmentPurpose: String,
   investTime: Number,
   goal: String,
   riskLevel: String,
   categoryName: String,
   category: [{ stockCode: String, proportion: Number, _id: false }],
+  _id: String
 });
 
-/* Set customerId as unique id */
-InvestmentPortfolio.pre('save', next => {
-  let self = this;
-
+InvestmentPortfolio.pre('save', function (next) {
   this._id = this.customerId;
-
   next();
 });
 
