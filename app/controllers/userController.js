@@ -16,7 +16,7 @@ router.post("/api/users/register", (req, res) => {
 
   userService
     .registerNewUser(req.userInfo)
-    .then(() => res.status(201).end())
+    .then(() => return201Success(res))
     .catch(err => {
       console.log(err);
 
@@ -32,7 +32,7 @@ router.post("/api/users/register", (req, res) => {
 router.post("/api/free_user", (req, res) => {
   userService
     .saveFreeUser(req.body)
-    .then(() => res.status(201).end())
+    .then(() => return201Success(res))
     .catch(err => {
       console.log(err);
 
@@ -79,7 +79,7 @@ router.post("/api/users/investment", (req, res) => {
 
   userService
     .registerInvestment(customerId, investmentData)
-    .then(() => res.status(201).end())
+    .then(() => return201Success(res))
     .catch(err => {
       console.log("Save investment error", err);
 
@@ -125,7 +125,7 @@ router.post("/api/users/sub_account", (req, res) => {
   const customerId = req.userInfo.customerId;
   userService
     .createSubAccount(customerId, req.body.accountName)
-    .then(() => res.status(201).end())
+    .then(() => return201Success(res))
     .catch(err => {
       console.log(err);
 
@@ -134,5 +134,15 @@ router.post("/api/users/sub_account", (req, res) => {
       });
     });
 });
+
+/**
+ * Response to client with status 201 and code 'OK'
+ * @param {*} response - the response object of the http method
+ */
+function return201Success(response) {
+  return response.status(201).json({
+    code: 'OK'
+  });
+}
 
 module.exports = router;
