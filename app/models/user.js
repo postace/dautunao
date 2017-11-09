@@ -4,7 +4,11 @@ const mongoose = require("mongoose");
 let Schema = mongoose.Schema;
 
 let User = new Schema({
-  customerId: String,
+  customerId: {
+    type: String,
+    required: true,
+    unique: true
+  },
   userId: String,
   customerName: String,
   email: String,
@@ -15,6 +19,10 @@ let User = new Schema({
   roles: String,
   accountType: String,
   status: String,
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
   subAccounts: [{ accountName: String, _id: false }]
 });
 
