@@ -12,6 +12,9 @@ let User = new Schema({
   tradingExp: Number,
   status: String,
   registerStatus: String,
+  roles: String,
+  accountType: String,
+  status: String,
   subAccounts: [{ accountName: String, _id: false }]
 });
 

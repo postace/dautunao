@@ -14,6 +14,9 @@ exports.registerNewUser = userInfo => {
       username: userInfo.username,
       tradingExp: userInfo.tradingExp,
       status: userInfo.status,
+      roles: userInfo.roles,
+      accountType: userInfo.accountType,
+      status: userInfo.status,
       registerStatus: REGISTER_STATUS.PendingServiceDesk
     });
 
