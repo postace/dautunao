@@ -83,14 +83,18 @@ exports.registerInvestment = (customerId, investmentData) => {
   });
 };
 
-exports.getUserInfo = customerId => {
-  return new Promise((resolve, reject) => { 
-    // find user by their's customerId
+exports.getUserInfo = userToken => {
+  return new Promise((resolve, reject) => {
     User.findOne({
-      customerId: customerId
+      customerId: userToken.customerId
     }, (err, res) => {
       if (err) {
         reject(err);
+      }
+      // User not register, we return their info with register status is NotRegistered
+      if (!res) {
+        res = userToken;
+        res.registerStatus = REGISTER_STATUS.NotRegistered;
       }
 
       resolve(res);

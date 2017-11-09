@@ -100,7 +100,7 @@ router.get("/api/users/info", (req, res) => {
   }
 
   userService
-    .getUserInfo(req.userInfo.customerId)
+    .getUserInfo(req.userInfo)
     .then(data => res.json(data))
     .catch(err => {
       console.log("Get user error", err);
