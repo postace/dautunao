@@ -16,12 +16,8 @@ router.post("/api/users/register", (req, res) => {
     userService
       .registerNewUser(req.userInfo)
       .then(() => return201Success(res))
-      .catch(err => {
-        console.log(err);
-
-        res.status(500).json({
-          message: "Internal Server Error. Please try again"
-        });
+      .catch(error => {
+        res.status(error.httpStatus).json(error);
       });
   }
 });

@@ -3,6 +3,7 @@
 let { User, FreeUser } = require("../models/user");
 let InvestmentPortfolio = require("../models/investment");
 const { REGISTER_STATUS } = require("../utils/userUtil");
+const ErrorCode = require("../common/error").ErrorCode;
 
 exports.registerNewUser = userInfo => {
   return new Promise((resolve, reject) => {
@@ -22,7 +23,12 @@ exports.registerNewUser = userInfo => {
 
     newUser.save(err => {
       if (err) {
-        reject(err);
+        console.log(err.message);
+        if (err.code === 11000) {
+          reject(ErrorCode.ERR_USER_EXIST);
+        } else {
+          reject(ErrorCode.ERR_SERVER);
+        }
       }
 
       resolve();
@@ -49,14 +55,14 @@ exports.saveFreeUser = userReq => {
 };
 
 exports.getInvestmentPortfolio = (customerId, subAccount) => {
-  return new Promise((resolve, reject) => { 
+  return new Promise((resolve, reject) => {
     InvestmentPortfolio.find({ subAccount: subAccount }, (err, doc) => {
       if (err) {
         reject(err);
       }
 
       resolve(doc);
-    })
+    });
   });
 };
 
@@ -72,7 +78,7 @@ exports.registerInvestment = (customerId, investmentData) => {
       category: investmentData.category,
       categoryName: investmentData.categoryName
     });
-    
+
     investmentPortfolio.save(err => {
       if (err) {
         reject(err);
@@ -85,25 +91,28 @@ exports.registerInvestment = (customerId, investmentData) => {
 
 exports.getUserInfo = userToken => {
   return new Promise((resolve, reject) => {
-    User.findOne({
-      customerId: userToken.customerId
-    }, (err, res) => {
-      if (err) {
-        reject(err);
-      }
-      // User not register, we return their info with register status is NotRegistered
-      if (!res) {
-        res = userToken;
-        res.registerStatus = REGISTER_STATUS.NotRegistered;
-      }
+    User.findOne(
+      {
+        customerId: userToken.customerId
+      },
+      (err, res) => {
+        if (err) {
+          reject(err);
+        }
+        // User not register, we return their info with register status is NotRegistered
+        if (!res) {
+          res = userToken;
+          res.registerStatus = REGISTER_STATUS.NotRegistered;
+        }
 
-      resolve(res);
-    });
+        resolve(res);
+      }
+    );
   });
 };
 
 exports.createSubAccount = (customerId, accountName) => {
-  return new Promise((resolve, reject) => { 
+  return new Promise((resolve, reject) => {
     // TODO: Check for user exist
     // TODO: Validate accountName unique, not empty
     User.findOne({ customerId: customerId }, (err, user) => {
@@ -118,7 +127,7 @@ exports.createSubAccount = (customerId, accountName) => {
         }
 
         resolve();
-      })
-    })
+      });
+    });
   });
-}
+};
