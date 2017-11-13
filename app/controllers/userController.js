@@ -12,18 +12,18 @@ router.post("/api/users/register", (req, res) => {
     res.status(401).json({
       message: "Missing access token!"
     });
-  }
+  } else {
+    userService
+      .registerNewUser(req.userInfo)
+      .then(() => return201Success(res))
+      .catch(err => {
+        console.log(err);
 
-  userService
-    .registerNewUser(req.userInfo)
-    .then(() => return201Success(res))
-    .catch(err => {
-      console.log(err);
-
-      res.status(500).json({
-        message: "Internal Server Error. Please try again"
+        res.status(500).json({
+          message: "Internal Server Error. Please try again"
+        });
       });
-    });
+  }
 });
 
 /**
@@ -51,18 +51,19 @@ router.get("/api/users/investment", (req, res) => {
     res.status(401).json({
       message: "Missing access token!"
     });
+  } else {
+    let customerId = req.userInfo.customerId;
+    let subAccount = req.query.subAccount;
+
+    userService
+      .getInvestmentPortfolio(customerId, subAccount)
+      .then(doc => res.json(doc))
+      .catch(err => {
+        console.log(err);
+
+        res.status(500).json({ message: "Investment portfolio not found" });
+      });
   }
-
-  let customerId = req.userInfo.customerId;
-  let subAccount = req.query.subAccount;
-  
-  userService.getInvestmentPortfolio(customerId, subAccount)
-    .then(doc => res.json(doc))
-    .catch(err => {
-      console.log(err);
-
-      res.status(500).json({ message: 'Investment portfolio not found' });
-    });
 });
 
 /**
@@ -73,20 +74,21 @@ router.post("/api/users/investment", (req, res) => {
     res.status(401).json({
       message: "Missing access token!"
     });
-  }
-  let investmentData = req.body;
-  let customerId = req.userInfo.customerId;
+  } else {
+    let investmentData = req.body;
+    let customerId = req.userInfo.customerId;
 
-  userService
-    .registerInvestment(customerId, investmentData)
-    .then(() => return201Success(res))
-    .catch(err => {
-      console.log("Save investment error", err);
+    userService
+      .registerInvestment(customerId, investmentData)
+      .then(() => return201Success(res))
+      .catch(err => {
+        console.log("Save investment error", err);
 
-      res.status(500).json({
-        message: "Internal Server Error. Please try again"
+        res.status(500).json({
+          message: "Internal Server Error. Please try again"
+        });
       });
-    });
+  }
 });
 
 /**
@@ -97,18 +99,18 @@ router.get("/api/users/info", (req, res) => {
     res.status(401).json({
       message: "Missing access token!"
     });
-  }
+  } else {
+    userService
+      .getUserInfo(req.userInfo)
+      .then(data => res.json(data))
+      .catch(err => {
+        console.log("Get user error", err);
 
-  userService
-    .getUserInfo(req.userInfo)
-    .then(data => res.json(data))
-    .catch(err => {
-      console.log("Get user error", err);
-
-      res.status(404).json({
-        message: "Cannot find this user"
+        res.status(404).json({
+          message: "Cannot find this user"
+        });
       });
-    });
+  }
 });
 
 /**
@@ -119,20 +121,20 @@ router.post("/api/users/sub_account", (req, res) => {
     res.status(401).json({
       message: "Missing access token!"
     });
-  }
+  } else {
+    // TODO: Check for missing accountName in request body
+    const customerId = req.userInfo.customerId;
+    userService
+      .createSubAccount(customerId, req.body.accountName)
+      .then(() => return201Success(res))
+      .catch(err => {
+        console.log(err);
 
-  // TODO: Check for missing accountName in request body
-  const customerId = req.userInfo.customerId;
-  userService
-    .createSubAccount(customerId, req.body.accountName)
-    .then(() => return201Success(res))
-    .catch(err => {
-      console.log(err);
-
-      res.status(500).json({
-        message: "Something error! Please try again later"
+        res.status(500).json({
+          message: "Something error! Please try again later"
+        });
       });
-    });
+  }
 });
 
 /**
@@ -141,7 +143,7 @@ router.post("/api/users/sub_account", (req, res) => {
  */
 function return201Success(response) {
   return response.status(201).json({
-    code: 'OK'
+    code: "OK"
   });
 }
 
