@@ -19,9 +19,4 @@ let InvestmentPortfolio = new Schema({
   _id: String
 });
 
-InvestmentPortfolio.pre('save', function (next) {
-  this._id = this.customerId;
-  next();
-});
-
 module.exports = mongoose.model("InvestmentPortfolio", InvestmentPortfolio);
