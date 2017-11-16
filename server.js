@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
 // use morgan to log requests to the console
-app.use(morgan('dev'));
+app.use(morgan(process.env.MORGAN_FORMAT || 'dev'));
 app.use(extractUserInfo);
 
 mongoose.connect(process.env.MONGO_URI);
