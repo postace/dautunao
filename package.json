@@ -1,6 +1,6 @@
 {
   "name": "dautunao",
-  "version": "1.0.0-SNAPSHOT",
+  "version": "0.1.0-RELEASE",
   "description": "Backend service for DauTuNao",
   "main": "server.js",
   "scripts": {
