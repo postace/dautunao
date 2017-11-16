@@ -3,6 +3,7 @@
 const REGISTER_STATUS = {
   NotRegistered: "NotRegistered",
   PendingServiceDesk: "PendingServiceDesk",
+  CanceledServiceDesk: "CanceledServiceDesk",
   PendingContract: "PendingContract",
   SignedContract: "SignedContract"
 };
