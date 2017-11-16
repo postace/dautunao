@@ -140,8 +140,8 @@ exports.getWaitlist = () => {
       .findAllByStatus(REGISTER_STATUS.PendingServiceDesk)
       .then(pendingUsers => {
         pendingUsers.forEach(user => {
-          let {customerId, customerName, email, phoneNumber} = user;
-          waitlist.push({customerId, customerName, email, phoneNumber});
+          let { customerId, customerName, email, phoneNumber } = user;
+          waitlist.push({ customerId, customerName, email, phoneNumber });
         });
 
         userDao.findAllFreeUser().then(freeUsers => {
@@ -150,5 +150,35 @@ exports.getWaitlist = () => {
         });
       })
       .catch(err => reject(ErrorCode.ERR_SERVER));
+  });
+};
+
+exports.confirmOrCancelServiceDesk = (customerId, callStatus) => {
+  // TODO: Check for user exist
+  return new Promise((resolve, reject) => {
+    User.findOne({ customerId: customerId })
+      .then(user => {
+        if (user.registerStatus === REGISTER_STATUS.PendingServiceDesk) {
+          callStatus = callStatus.toUpperCase();
+
+          switch (callStatus) {
+            case "CONFIRMED":
+              // User confirmed service desk call, now they'll wait for signing contract
+              user.registerStatus = REGISTER_STATUS.PendingContract;
+              break;
+            case "CANCELED":
+              user.registerStatus = REGISTER_STATUS.CanceledServiceDesk;
+              break;
+            default:
+              reject(ErrorCode.ERR_STATUS_CANNOT_UNDERSTAND);
+          }
+
+          return user.save();
+        } else {
+          reject(ErrorCode.ERR_CANNOT_CHANGE_STATUS);
+        }
+      })
+      .then(() => resolve())
+      .catch(err => reject(ErrorCode.ERR_USER_NOT_FOUND));
   });
 };

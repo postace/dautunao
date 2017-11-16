@@ -1,8 +1,10 @@
 "use strict";
 
 const router = require("express").Router();
+const _ = require("lodash");
 const userService = require("../services/userService");
 const utils = require("../utils/util");
+const { ErrorCode } = require("../common/error");
 
 /**
  * First time register a user
@@ -137,9 +139,35 @@ router.post("/api/users/sub_account", (req, res) => {
  * Get all customer who is not being called by service desk
  */
 router.get("/api/users/wait_list", (req, res) => {
-  userService.getWaitlist()
-  .then(waitlist => res.json(waitlist))
-  .catch(error => res.status(error.httpStatus).json(error));
+  userService
+    .getWaitlist()
+    .then(waitlist => res.json(waitlist))
+    .catch(error => res.status(error.httpStatus).json(error));
+});
+
+/**
+ * Confirm or cancel service desk call
+ * 
+ * If user confirm, their status will change from PendingServiceDesk to PendingContract
+ * otherwise, it will be CanceledServiceDesk
+ * 
+ * Request body will contains callStatus as a string, "Confirmed" or "Canceled"
+ */
+router.post("/api/users/pending_service_desk", (req, res) => {
+  // TODO: Check for permission to change user status
+  let customerId = req.query.customerId;
+  let { callStatus } = req.body;
+  if (_.isEmpty(customerId)) {
+    res.status(400).json(ErrorCode.ERR_MISSING_CUSTID);
+  } else if (_.isEmpty(callStatus)) {
+    let errorCode = ErrorCode.ERR_MISSING_CALL_STATUS;
+    res.status(errorCode.httpStatus).json(errorCode);
+  } else {
+    userService
+      .confirmOrCancelServiceDesk(customerId, callStatus)
+      .then(() => return201Success(res))
+      .catch(error => res.status(error.httpStatus).json(error));
+  }
 });
 
 /**
