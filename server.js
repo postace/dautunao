@@ -19,7 +19,7 @@ app.use(morgan('dev'));
 app.use(extractUserInfo);
 
 mongoose.connect(process.env.MONGO_URI);
-mongoose.Promise = global.Promise;
+mongoose.Promise = Promise;
 
 app.use('/', router);
 
