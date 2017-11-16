@@ -134,6 +134,15 @@ router.post("/api/users/sub_account", (req, res) => {
 });
 
 /**
+ * Get all customer who is not being called by service desk
+ */
+router.get("/api/users/wait_list", (req, res) => {
+  userService.getWaitlist()
+  .then(waitlist => res.json(waitlist))
+  .catch(error => res.status(error.httpStatus).json(error));
+});
+
+/**
  * Response to client with status 201 and code 'OK'
  * @param {*} response - the response object of the http method
  */

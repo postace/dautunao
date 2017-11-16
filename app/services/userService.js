@@ -4,6 +4,7 @@ let { User, FreeUser } = require("../models/user");
 let InvestmentPortfolio = require("../models/investment");
 const { REGISTER_STATUS } = require("../utils/userUtil");
 const ErrorCode = require("../common/error").ErrorCode;
+const userDao = require("../dao/userDao");
 
 exports.registerNewUser = userInfo => {
   return new Promise((resolve, reject) => {
@@ -129,5 +130,25 @@ exports.createSubAccount = (customerId, accountName) => {
         resolve();
       });
     });
+  });
+};
+
+exports.getWaitlist = () => {
+  return new Promise((resolve, reject) => {
+    let waitlist = [];
+    userDao
+      .findAllByStatus(REGISTER_STATUS.PendingServiceDesk)
+      .then(pendingUsers => {
+        pendingUsers.forEach(user => {
+          let {customerId, customerName, email, phoneNumber} = user;
+          waitlist.push({customerId, customerName, email, phoneNumber});
+        });
+
+        userDao.findAllFreeUser().then(freeUsers => {
+          freeUsers.forEach(freeUser => waitlist.push(freeUser));
+          resolve(waitlist);
+        });
+      })
+      .catch(err => reject(ErrorCode.ERR_SERVER));
   });
 };
