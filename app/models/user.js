@@ -33,7 +33,7 @@ User.pre('save', function (next) {
 });
 
 let FreeUser = new Schema({
-  fullName: String,
+  customerName: String,
   email: String,
   phoneNumber: String
 });
